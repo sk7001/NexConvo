@@ -8,8 +8,9 @@ const checkEmail = async (req, res) => {
             return res.status(400).json({ message: "User with this email doesn't exist." })
         }
         return res.status(200).json({
-            message: "Verify email",
-            user: checkEmail
+            message: `Please enter your password ${checkEmail.name}`,
+            checkEmail
+
         })
     } catch (error) {
         return res.status(500).json({ message: "Internal Server Error" })

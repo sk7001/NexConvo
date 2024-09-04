@@ -1,0 +1,65 @@
+.mainwindow {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+}
+
+.mainwindow .formwindow {
+    text-align: center;
+}
+
+.mainwindow .formwindow .form {
+    min-width: 80vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.mainwindow .formwindow .form img{
+    height: 20vw;
+    align-self: center;
+    margin-bottom: 10px;
+    border-radius: 100%;
+    object-fit: cover;
+    aspect-ratio: 1/1;
+}
+
+.mainwindow .formwindow .form input,
+select {
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px;
+    transition: 100ms;
+    border: none;
+}
+
+.mainwindow .formwindow .form input:hover {
+    scale: 1.01
+}
+
+.mainwindow .formwindow .form button,.button {
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px;
+    transition: 400ms;
+    cursor: pointer;
+    background-color: red;
+    border: none;
+}
+
+.mainwindow .formwindow .form button:hover,.button:hover {
+    scale: 1.01;
+    background-color: rgb(175, 0, 0);
+}
+
+.mainwindow .formwindow .form .signin {
+    text-decoration: none;
+    margin: 10px;
+    color: red;
+    transition: 400ms;
+}
+
+.mainwindow .formwindow .form .signin:hover {
+    color: rgba(255, 255, 255, 0.826);
+}

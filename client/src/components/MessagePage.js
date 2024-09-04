@@ -1,0 +1,270 @@
+import axios from 'axios'
+import React, { useCallback, useEffect, useState } from 'react'
+import "./MessagePage.css"
+
+const friends = [
+  {
+    "name": "Alice Johnson",
+    "email": "alice.johnson@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/women/1.jpg"
+  },
+  {
+    "name": "Bob Smith",
+    "email": "bob.smith@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/men/2.jpg"
+  },
+  {
+    "name": "Catherine Brown",
+    "email": "catherine.brown@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/women/3.jpg"
+  },
+  {
+    "name": "David Williams",
+    "email": "david.williams@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/men/4.jpg"
+  },
+  {
+    "name": "Eva Miller",
+    "email": "eva.miller@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/women/5.jpg"
+  },
+  {
+    "name": "Frank Thomas",
+    "email": "frank.thomas@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/men/6.jpg"
+  },
+  {
+    "name": "Grace Lee",
+    "email": "grace.lee@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/women/7.jpg"
+  },
+  {
+    "name": "Henry Wilson",
+    "email": "henry.wilson@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/men/8.jpg"
+  },
+  {
+    "name": "Isabella Martinez",
+    "email": "isabella.martinez@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/women/9.jpg"
+  },
+  {
+    "name": "Jack Taylor",
+    "email": "jack.taylor@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/men/10.jpg"
+  },  {
+    "name": "Alice Johnson",
+    "email": "alice.johnson@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/women/1.jpg"
+  },
+  {
+    "name": "Bob Smith",
+    "email": "bob.smith@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/men/2.jpg"
+  },
+  {
+    "name": "Catherine Brown",
+    "email": "catherine.brown@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/women/3.jpg"
+  },
+  {
+    "name": "David Williams",
+    "email": "david.williams@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/men/4.jpg"
+  },
+  {
+    "name": "Eva Miller",
+    "email": "eva.miller@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/women/5.jpg"
+  },
+  {
+    "name": "Frank Thomas",
+    "email": "frank.thomas@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/men/6.jpg"
+  },
+  {
+    "name": "Grace Lee",
+    "email": "grace.lee@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/women/7.jpg"
+  },
+  {
+    "name": "Henry Wilson",
+    "email": "henry.wilson@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/men/8.jpg"
+  },
+  {
+    "name": "Isabella Martinez",
+    "email": "isabella.martinez@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/women/9.jpg"
+  },
+  {
+    "name": "Jack Taylor",
+    "email": "jack.taylor@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/men/10.jpg"
+  },  {
+    "name": "Alice Johnson",
+    "email": "alice.johnson@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/women/1.jpg"
+  },
+  {
+    "name": "Bob Smith",
+    "email": "bob.smith@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/men/2.jpg"
+  },
+  {
+    "name": "Catherine Brown",
+    "email": "catherine.brown@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/women/3.jpg"
+  },
+  {
+    "name": "David Williams",
+    "email": "david.williams@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/men/4.jpg"
+  },
+  {
+    "name": "Eva Miller",
+    "email": "eva.miller@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/women/5.jpg"
+  },
+  {
+    "name": "Frank Thomas",
+    "email": "frank.thomas@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/men/6.jpg"
+  },
+  {
+    "name": "Grace Lee",
+    "email": "grace.lee@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/women/7.jpg"
+  },
+  {
+    "name": "Henry Wilson",
+    "email": "henry.wilson@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/men/8.jpg"
+  },
+  {
+    "name": "Isabella Martinez",
+    "email": "isabella.martinez@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/women/9.jpg"
+  },
+  {
+    "name": "Jack Taylor",
+    "email": "jack.taylor@example.com",
+    "profile_pic": "https://randomuser.me/api/portraits/men/10.jpg"
+  },
+]
+
+
+export default function MessagePage() {
+  return (
+    <div className='messagingpage'>
+      <PeopleList />
+      <Messages />
+    </div>
+  )
+}
+
+function PeopleList() {
+  const [userDetails, setUserDetails] = useState({
+    name: '',
+    email: '',
+    profile_pic: ''
+  })
+  const getuser = useCallback(async () => {
+    const token = localStorage.getItem("token")
+    const response = await axios.get('http://localhost:8000/api/userdetails', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    setUserDetails({
+      name: response.data.user.name,
+      email: response.data.user.email,
+      profile_pic: response.data.user.profile_pic
+    })
+    console.log(response.data)
+  }, [])
+  useEffect(() => {
+    getuser()
+  }, [getuser])
+
+  const handleOnLogout = () => {
+    localStorage.clear()
+    window.location.reload()
+  }
+
+  return (
+    <div className='PeopleList'>
+      <div className='ProfileBox'>
+        <div className="Profile">
+          <img src={userDetails.profile_pic} alt={userDetails.name} />
+          <button onClick={handleOnLogout} className='Logout'>Logout</button>
+        </div>
+        <div className='Search'>
+          <input type='text' placeholder="Search" />
+        </div>
+      </div>
+      <div className='AllChats'>
+        {
+          friends.map((friend, index) => {
+            return (
+              <div key={index} className='Friend'>
+                <img src={friend.profile_pic} alt="profile pic" />
+                <label>{friend.name}</label>
+              </div>
+            )
+          })
+        }
+      </div>
+    </div>
+  )
+}
+
+function Messages() {
+  const sampleMessages = [
+    { type: 'received', text: 'Hey there! How are you?' },
+    { type: 'sent', text: 'I am good, how about you?' },
+    { type: 'received', text: 'I am doing well, thanks!' },
+    { type: 'sent', text: 'What have you been up to lately?' },
+    { type: 'received', text: 'Just working on some projects. You?' },
+    { type: 'sent', text: 'Same here, busy with coding and work.' },
+    { type: 'received', text: 'Nice! Keep up the good work.' },
+    { type: 'sent', text: 'Thanks! Will do.' },
+    { type: 'received', text: 'Hey there! How are you?' },
+    { type: 'sent', text: 'I am good, how about you?' },
+    { type: 'received', text: 'I am doing well, thanks!' },
+    { type: 'sent', text: 'What have you been up to lately?' },
+    { type: 'received', text: 'Just working on some projects. You?' },
+    { type: 'sent', text: 'Same here, busy with coding and work.' },
+    { type: 'received', text: 'Nice! Keep up the good work.' },
+    { type: 'sent', text: 'Thanks! Will do.' },
+    { type: 'received', text: 'Hey there! How are you?' },
+    { type: 'sent', text: 'I am good, how about you?' },
+    { type: 'received', text: 'I am doing well, thanks!' },
+    { type: 'sent', text: 'What have you been up to lately?' },
+    { type: 'received', text: 'Just working on some projects. You?' },
+    { type: 'sent', text: 'Same here, busy with coding and work.' },
+    { type: 'received', text: 'Nice! Keep up the good work.' },
+    { type: 'sent', text: 'Thanks! Will do.' }
+  ];
+
+  return (
+    <div className="Messages-box">
+      <div className="Name">
+        <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="profile pic" />
+        <label>John Doe</label>
+      </div>
+      <div className="Messages">
+        {sampleMessages.map((message, index) => (
+          <div key={index} className={`MessageItem ${message.type}`}>
+            <label>{message.text}</label>
+          </div>
+        ))}
+      </div>
+      <div className='MessageInputBox'>
+        <input type="text" placeholder="Type a message..." />
+        <button className='SendMessage'>Send</button>
+      </div>
+    </div>
+  );
+}
+

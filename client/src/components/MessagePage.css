@@ -1,0 +1,195 @@
+.messagingpage {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
+
+.messagingpage .PeopleList {
+    background-color: rgba(46, 46, 46, 0.645);
+    width: 25%;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.messagingpage .PeopleList .ProfileBox{
+    position: sticky;
+    top: 0px;
+    background-color: rgb(31, 31, 31);
+}
+
+.messagingpage .PeopleList .ProfileBox .Profile {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.messagingpage .PeopleList .ProfileBox .Profile img {
+    width: 50px;
+    border-radius: 100%;
+    margin: 15px 0 0 25px;
+}
+
+.messagingpage .PeopleList .ProfileBox .Profile .Logout {
+    background-color: rgba(198, 0, 0, 0.776);
+    border: none;
+    padding: 10px;
+    border-radius: 15px;
+    height: 50px;
+    color: white;
+    margin: 15px 15px 0 25px;
+    cursor: pointer;
+    transition: 100ms;
+}
+
+.messagingpage .PeopleList .ProfileBox .Profile .Logout:hover {
+    background-color: rgb(198, 0, 0);
+}
+
+.messagingpage .PeopleList .Search {
+    margin-top: 10px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    background-color: rgb(31, 31, 31);
+    justify-content: center;
+    z-index: 1000;
+}
+
+.messagingpage .PeopleList .Search input {
+    color: white;
+    font-size: 15px;
+    top: 15px;
+    background-color: rgba(255, 255, 255, 0.155);
+    width: 18vw;
+    padding: 15px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: rgb(54, 54, 54);
+    border-radius: 50px;
+}
+
+.messagingpage .PeopleList .AllChats img {
+    width: 50px;
+    border-radius: 100%;
+    margin: 15px;
+}
+
+.messagingpage .PeopleList .AllChats {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.messagingpage .PeopleList .Friend {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 2px;
+    border-radius: 15px;
+    transition: 250ms;
+    background-color: rgb(31, 31, 31);
+    cursor: pointer;
+}
+
+.messagingpage .PeopleList .Friend:hover {
+    background-color: rgba(255, 255, 255, 0.155);
+}
+
+
+
+
+/* Messages */
+.Messages-box {
+    position: relative;
+    width: 75%;
+    align-self: flex-start;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.Messages-box .Name {
+    display: flex;
+    flex-direction: row;
+    background: rgb(31, 31, 31);
+    border: none;
+    align-items: center;
+    width: 100%;
+    position: fixed;
+    z-index: 100;
+}
+
+.Messages-box .Name img {
+    width: 50px;
+    border-radius: 100%;
+    margin: 15px;
+}
+
+.Messages-box .Messages {
+    margin-top: 7%;
+    display: flex;
+    flex-direction: column;
+}
+
+.MessageItem {
+    padding: 15px;
+    border-radius: 10px;
+    margin: 0 10px 10px 10px;
+    bottom: 0px;
+    width: fit-content;
+    max-width: 50%;
+}
+
+.MessageItem.sent {
+    text-align: right;
+    position: static;
+    background-color: #232323;
+    align-self: flex-end;
+}
+
+.MessageItem.received {
+    background-color: #4b4b4b;
+    position: relative;
+    text-align: left;
+}
+
+.Messages-box .MessageInputBox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: fixed;
+    right: 20px;
+    bottom: 10px;
+    justify-content: flex-end;
+    width: 75%;
+}
+
+.Messages-box .MessageInputBox input {
+    background-color: #00303d;
+    color: white;
+    border: none;
+    border-radius: 15px 0 0 15px;
+    padding: 15px;
+    width: 95%;
+}
+
+.Messages-box .MessageInputBox button {
+    background-color: rgb(0, 5, 150);
+    border: none;
+    border-radius: 0 15px 15px 0;
+    padding: 15px;
+    color: white;
+    transition: 200ms;
+    cursor: pointer;
+    justify-self: flex-end;
+    width: 5%;
+}
+
+.Messages-box .MessageInputBox button:hover {
+    background-color: rgb(0, 3, 88);
+}
