@@ -8,8 +8,8 @@ export default function Login() {
     const [Step, setStep] = useState(0);
     return (
         <div>
-            {Step == 0 && <CheckEmailPage setStep={setStep} />}
-            {Step == 1 && <CheckPasswordPage />}
+            {Step === 0 && <CheckEmailPage setStep={setStep} />}
+            {Step === 1 && <CheckPasswordPage />}
         </div>
     )
 }
