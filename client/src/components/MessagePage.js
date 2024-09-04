@@ -52,7 +52,7 @@ const friends = [
     "name": "Jack Taylor",
     "email": "jack.taylor@example.com",
     "profile_pic": "https://randomuser.me/api/portraits/men/10.jpg"
-  },  {
+  }, {
     "name": "Alice Johnson",
     "email": "alice.johnson@example.com",
     "profile_pic": "https://randomuser.me/api/portraits/women/1.jpg"
@@ -101,7 +101,7 @@ const friends = [
     "name": "Jack Taylor",
     "email": "jack.taylor@example.com",
     "profile_pic": "https://randomuser.me/api/portraits/men/10.jpg"
-  },  {
+  }, {
     "name": "Alice Johnson",
     "email": "alice.johnson@example.com",
     "profile_pic": "https://randomuser.me/api/portraits/women/1.jpg"
@@ -155,42 +155,45 @@ const friends = [
 
 
 export default function MessagePage() {
+  const [ActiveChat, setActiveChat] = useState(0);
+
   return (
     <div className='messagingpage'>
-      <PeopleList />
-      <Messages />
+      <PeopleList setActiveChat={setActiveChat} />
+      <Messages activeFriend={friends[ActiveChat]} />
     </div>
-  )
+  );
 }
 
-function PeopleList() {
+function PeopleList({ setActiveChat }) {
   const [userDetails, setUserDetails] = useState({
     name: '',
     email: '',
     profile_pic: ''
-  })
+  });
+
   const getuser = useCallback(async () => {
-    const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token");
     const response = await axios.get('http://localhost:8000/api/userdetails', {
       headers: {
         'Authorization': `Bearer ${token}`
       }
-    })
+    });
     setUserDetails({
       name: response.data.user.name,
       email: response.data.user.email,
       profile_pic: response.data.user.profile_pic
-    })
-    console.log(response.data)
-  }, [])
+    });
+  }, []);
+
   useEffect(() => {
-    getuser()
-  }, [getuser])
+    getuser();
+  }, [getuser]);
 
   const handleOnLogout = () => {
-    localStorage.clear()
-    window.location.reload()
-  }
+    localStorage.clear();
+    window.location.reload();
+  };
 
   return (
     <div className='PeopleList'>
@@ -204,22 +207,18 @@ function PeopleList() {
         </div>
       </div>
       <div className='AllChats'>
-        {
-          friends.map((friend, index) => {
-            return (
-              <div key={index} className='Friend'>
-                <img src={friend.profile_pic} alt="profile pic" />
-                <label>{friend.name}</label>
-              </div>
-            )
-          })
-        }
+        {friends.map((friend, index) => (
+          <div key={index} className='Friend' onClick={() => setActiveChat(index)}>
+            <img src={friend.profile_pic} alt="profile pic" />
+            <label>{friend.name}</label>
+          </div>
+        ))}
       </div>
     </div>
-  )
+  );
 }
 
-function Messages() {
+function Messages({ activeFriend }) {
   const sampleMessages = [
     { type: 'received', text: 'Hey there! How are you?' },
     { type: 'sent', text: 'I am good, how about you?' },
@@ -250,8 +249,8 @@ function Messages() {
   return (
     <div className="Messages-box">
       <div className="Name">
-        <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="profile pic" />
-        <label>John Doe</label>
+        <img src={activeFriend.profile_pic} alt={activeFriend.name} />
+        <label>{activeFriend.name}</label>
       </div>
       <div className="Messages">
         {sampleMessages.map((message, index) => (
@@ -267,4 +266,3 @@ function Messages() {
     </div>
   );
 }
-

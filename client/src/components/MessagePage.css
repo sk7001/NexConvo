@@ -15,8 +15,9 @@
 
 .messagingpage .PeopleList .ProfileBox{
     position: sticky;
+    padding-top: 15px;
     top: 0px;
-    background-color: rgb(31, 31, 31);
+    background-color: #2a0000;
 }
 
 .messagingpage .PeopleList .ProfileBox .Profile {
@@ -53,7 +54,6 @@
     padding: 25px;
     display: flex;
     align-items: center;
-    background-color: rgb(31, 31, 31);
     justify-content: center;
     z-index: 1000;
 }
@@ -62,7 +62,7 @@
     color: white;
     font-size: 15px;
     top: 15px;
-    background-color: rgba(255, 255, 255, 0.155);
+    background-color: #00303d;
     width: 18vw;
     padding: 15px;
     border-style: solid;
@@ -166,7 +166,7 @@
     right: 20px;
     bottom: 10px;
     justify-content: flex-end;
-    width: 75%;
+    width: 70%;
 }
 
 .Messages-box .MessageInputBox input {
@@ -187,7 +187,7 @@
     transition: 200ms;
     cursor: pointer;
     justify-self: flex-end;
-    width: 5%;
+    width: 70px;
 }
 
 .Messages-box .MessageInputBox button:hover {
