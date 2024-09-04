@@ -44,7 +44,7 @@ export default function RegisterPage() {
       toast.dismiss()
       toast.success(response.data.message)
       toast.success("Please signin again to continue.")
-      navigate("/signin")
+      navigate("/login")
     }catch(error){
       toast.dismiss()
       toast.error(error.response.data.message)
