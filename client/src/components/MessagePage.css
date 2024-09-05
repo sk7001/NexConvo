@@ -53,6 +53,7 @@
     margin-top: 10px;
     padding: 25px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 1000;
@@ -69,6 +70,41 @@
     border-width: 2px;
     border-color: rgb(54, 54, 54);
     border-radius: 50px;
+}
+
+.messagingpage .PeopleList .Search .searchresults{
+    position: relative;
+    background-color: #00303d;
+    overflow-y: auto;
+    scrollbar-width: none;
+    position: fixed;
+    padding-top: 30px;
+    top: 140px;
+    max-height: 50%;
+    border-radius:0 0 15px 15px ;
+    width: 19.7vw;
+    z-index: -1;
+}
+
+.messagingpage .PeopleList .Search .searchresults .Friend{
+    height: 70px;
+}
+
+.messagingpage .PeopleList .Search .searchresults .Friend img{
+    height:50px;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    margin:10px;
+    padding: 10px;
+    border-radius: 100%;
+}
+
+.messagingpage .PeopleList .Search .searchresults .endoflist{
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    background-color: rgba(255, 0, 0, 0.638);
+    padding: 10px 0;
 }
 
 .messagingpage .PeopleList .AllChats img {

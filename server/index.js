@@ -12,6 +12,7 @@ const router = require("./routes/router")
 
 const { Server } = require("socket.io")
 const http = require("http")
+const UserModel = require("./models/UserModel")
 const server = http.createServer(app)
 const io = new Server(server, {
     cors: {
@@ -28,11 +29,15 @@ const PORT = process.env.PORT
 app.use("/api", router)
 
 io.on('connection', (socket) => {
+    //log the socket id
     console.log(`Client connected ${socket.id}`);
-
-    socket.on('sendMessage', (message) => {
-        console.log('Message received:', message);
-    });
+    //search for people
+    socket.on('searchpeople', async (search) => {
+        console.log('searching people:', search)
+        const users = await UserModel.find({ email: { $regex: '^' + search, $options: 'i' } }).select("-password")
+        console.log(users)
+        socket.emit('searchresult', users)
+    })
 })
 server.listen(PORT, async () => {
     await connectDB()

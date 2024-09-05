@@ -79,16 +79,31 @@ function PeopleList({ setActiveChat }) {
     getuser();
   }, [getuser]);
 
-  useEffect(() => {
-    const message = "Hello"
-    socket.emit('sendMessage', message);
-  })
-
   const handleOnLogout = () => {
     localStorage.clear();
     window.location.reload();
   };
 
+
+  //search bar
+  const [search, setsearch] = useState("");
+  const [people, setpeople] = useState([]);
+  const handleOnSearch = (event) => {
+    const currentSearch = event.target.value;
+    setsearch(currentSearch);
+    socket.emit("searchpeople", currentSearch)
+    socket.on("searchresult", (people) => {
+      if(people){
+        setpeople(people)
+        return () => {
+          socket.off("searchresult");
+        };
+      }
+      else{
+        setpeople([])
+      }
+    })
+  }
   return (
     <div className='PeopleList'>
       <div className='ProfileBox'>
@@ -97,7 +112,16 @@ function PeopleList({ setActiveChat }) {
           <button onClick={handleOnLogout} className='Logout'>Logout</button>
         </div>
         <div className='Search'>
-          <input type='text' placeholder="Search" />
+          <input type='text' placeholder="Search" onChange={handleOnSearch} />
+          {search && <div className='searchresults'>
+            {people.map((friend, index) => (
+              <div key={index} className='Friend' onClick={() => setActiveChat(index)}>
+                <img src={friend.profile_pic} alt="profile pic" />
+                <label>{friend.name}</label>
+              </div>
+            ))}
+            <label className='endoflist'>*****End of List*****</label>
+          </div>}
         </div>
       </div>
       <div className='AllChats'>
