@@ -4,63 +4,42 @@ import "./MessagePage.css"
 import { socket } from '../socket';
 
 
-const friends = [
-  {
-    "name": "Alice Johnson",
-    "email": "alice.johnson@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/women/1.jpg"
-  },
-  {
-    "name": "Bob Smith",
-    "email": "bob.smith@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/men/2.jpg"
-  },
-  {
-    "name": "Catherine Brown",
-    "email": "catherine.brown@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/women/3.jpg"
-  },
-  {
-    "name": "David Williams",
-    "email": "david.williams@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/men/4.jpg"
-  },
-  {
-    "name": "Eva Miller",
-    "email": "eva.miller@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/women/5.jpg"
-  },
-  {
-    "name": "Frank Thomas",
-    "email": "frank.thomas@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/men/6.jpg"
-  },
-  {
-    "name": "Grace Lee",
-    "email": "grace.lee@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/women/7.jpg"
-  }
-]
-
 
 export default function MessagePage() {
   const [ActiveChat, setActiveChat] = useState(0);
+  //getfriendsdetails
+  const [friends, setFriends] = useState([]);
+  const getfriends = useCallback(async () => {
+    const token = localStorage.getItem("token");
+    const response = await axios.get('http://localhost:8000/api/friends', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    const friends = response.data.friends
+    setFriends(friends)
+  }, []);
+
+  useEffect(() => {
+    getfriends();
+  }, [getfriends])
 
   return (
     <div className='messagingpage'>
-      <PeopleList setActiveChat={setActiveChat} />
-      <Messages activeFriend={friends[ActiveChat]} />
+      <PeopleList setActiveChat={setActiveChat} friends={friends} />
+      {ActiveChat&&<Messages activeFriend={friends[ActiveChat]} />}
     </div>
   );
 }
 
-function PeopleList({ setActiveChat }) {
+function PeopleList({ setActiveChat, friends }) {
   const [userDetails, setUserDetails] = useState({
     name: '',
     email: '',
     profile_pic: ''
   });
 
+  //getuser details
   const getuser = useCallback(async () => {
     const token = localStorage.getItem("token");
     const response = await axios.get('http://localhost:8000/api/userdetails', {
@@ -75,9 +54,10 @@ function PeopleList({ setActiveChat }) {
     });
   }, []);
 
+
   useEffect(() => {
     getuser();
-  }, [getuser]);
+  }, [getuser, friends]);
 
   const handleOnLogout = () => {
     localStorage.clear();
@@ -93,13 +73,13 @@ function PeopleList({ setActiveChat }) {
     setsearch(currentSearch);
     socket.emit("searchpeople", currentSearch)
     socket.on("searchresult", (people) => {
-      if(people){
+      if (people) {
         setpeople(people)
         return () => {
           socket.off("searchresult");
         };
       }
-      else{
+      else {
         setpeople([])
       }
     })
@@ -167,8 +147,9 @@ function Messages({ activeFriend }) {
   return (
     <div className="Messages-box">
       <div className="Name">
-        <img src={activeFriend.profile_pic} alt={activeFriend.name} />
-        <label>{activeFriend.name}</label>
+        <label>{console.log(activeFriend)}</label>
+        {/* <img src={activeFriend.profile_pic} alt={activeFriend.name} />
+        <label>{activeFriend.name}</label> */}
       </div>
       <div className="Messages">
         {sampleMessages.map((message, index) => (

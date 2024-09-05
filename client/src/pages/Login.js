@@ -77,7 +77,6 @@ export function CheckPasswordPage() {
             navigate("/user/messagepage")
             localStorage.setItem("token", response.data.token)
         } catch (error) {
-            navigate("/email")
             toast.dismiss()
             toast.error(error.response.data.message)
             console.log(error.response.data.message)
