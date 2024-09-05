@@ -4,7 +4,7 @@ import "./MessagePage.css";
 import { socket } from '../socket';
 
 export default function MessagePage() {
-  const [ActiveChat, setActiveChat] = useState("");
+  const [activeChatId, setActiveChatId] = useState(null);
   const [friends, setFriends] = useState([]);
 
   const getfriends = useCallback(async () => {
@@ -19,7 +19,6 @@ export default function MessagePage() {
 
     socket.on("friends", handleFriends);
 
-    // Cleanup listener on unmount
     return () => {
       socket.off("friends", handleFriends);
     };
@@ -29,15 +28,17 @@ export default function MessagePage() {
     getfriends();
   }, [getfriends]);
 
+  const activeChat = friends.find(friend => friend._id === activeChatId);
+
   return (
     <div className='messagingpage'>
-      <PeopleList setActiveChat={setActiveChat} friends={friends} />
-      <Messages activeChat={friends[ActiveChat]} setActiveChat={setActiveChat} />
+      <PeopleList setActiveChatId={setActiveChatId} friends={friends} />
+      <Messages activeChat={activeChat} setActiveChatId={setActiveChatId} />
     </div>
   );
 }
 
-function PeopleList({ setActiveChat, friends }) {
+function PeopleList({ setActiveChatId, friends }) {
   const [userDetails, setUserDetails] = useState({
     name: '',
     email: '',
@@ -60,7 +61,7 @@ function PeopleList({ setActiveChat, friends }) {
 
   useEffect(() => {
     getuser();
-  }, [getuser]); // Removed 'friends' dependency
+  }, [getuser]);
 
   const handleOnLogout = () => {
     localStorage.clear();
@@ -97,8 +98,8 @@ function PeopleList({ setActiveChat, friends }) {
         <div className='Search'>
           <input type='text' placeholder="Search" onChange={handleOnSearch} />
           {searchState.search && <div className='searchresults'>
-            {searchState.people.map((friend, index) => (
-              <button key={index} className='Friend' onClick={() => setActiveChat(index)}>
+            {searchState.people.map((friend) => (
+              <button key={friend._id} className='Friend' onClick={() => setActiveChatId(friend._id)}>
                 <img src={friend.profile_pic} alt="profile pic" />
                 <label>{friend.name}</label>
               </button>
@@ -108,8 +109,8 @@ function PeopleList({ setActiveChat, friends }) {
         </div>
       </div>
       <div className='AllChats'>
-        {friends.map((friend, index) => (
-          <button key={index} className='Friend' onClick={() => setActiveChat(index)}>
+        {friends.map((friend) => (
+          <button key={friend._id} className='Friend' onClick={() => setActiveChatId(friend._id)}>
             <img src={friend.profile_pic} alt="profile pic" />
             <label>{friend.name}</label>
           </button>
@@ -119,10 +120,11 @@ function PeopleList({ setActiveChat, friends }) {
   );
 }
 
-function Messages({ activeChat, setActiveChat }) {
+function Messages({ activeChat, setActiveChatId }) {
   if (!activeChat) {
     return <div className='noactiveselected'><h1>No active chat selected</h1></div>;
   }
+
   const sampleMessages = [
     { type: 'received', text: 'Hey there! How are you?' },
     { type: 'sent', text: 'I am good, how about you?' },
@@ -135,7 +137,7 @@ function Messages({ activeChat, setActiveChat }) {
   ]
 
   const handleOnClose = () => {
-    setActiveChat(null)
+    setActiveChatId(null)
   }
 
   return (
