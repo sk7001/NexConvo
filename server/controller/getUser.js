@@ -1,7 +1,6 @@
 const UserModel = require("../models/UserModel")
 
 const getUser = (req, res) => {
-    console.log(req.body)
     const userId = req.body.userId
     const user = UserModel.findOne({ _id: userId })
     const userDetails = {

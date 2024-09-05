@@ -3,9 +3,10 @@ import { Outlet } from 'react-router-dom'
 import Login from '../Login'
 
 export default function Auth() {
+    const token = localStorage.getItem("token")
     return (
         <div>
-            {localStorage.getItem("token") ? <Outlet /> : <Login />}
+            {token ? <Outlet /> : <Login />}
         </div>
     )
 }

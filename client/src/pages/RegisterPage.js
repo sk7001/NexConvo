@@ -74,7 +74,7 @@ export default function RegisterPage() {
           <input type="email" name="email" value={user.email} onChange={handleOnChange} placeholder='Enter your email' />
           <input type="password" name="password" value={user.password} onChange={handleOnChange} placeholder='Enter your password' />
           <button onClick={handleOnClick} >Register</button>
-          <Link to="/email" className='signin'>Signin?</Link>
+          <Link to="/login" className='signin'>Signin?</Link>
         </form>
       </div>
     </div >

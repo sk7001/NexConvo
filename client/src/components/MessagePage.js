@@ -1,6 +1,8 @@
 import axios from 'axios'
 import React, { useCallback, useEffect, useState } from 'react'
 import "./MessagePage.css"
+import { socket } from '../socket';
+
 
 const friends = [
   {
@@ -37,120 +39,7 @@ const friends = [
     "name": "Grace Lee",
     "email": "grace.lee@example.com",
     "profile_pic": "https://randomuser.me/api/portraits/women/7.jpg"
-  },
-  {
-    "name": "Henry Wilson",
-    "email": "henry.wilson@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/men/8.jpg"
-  },
-  {
-    "name": "Isabella Martinez",
-    "email": "isabella.martinez@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/women/9.jpg"
-  },
-  {
-    "name": "Jack Taylor",
-    "email": "jack.taylor@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/men/10.jpg"
-  }, {
-    "name": "Alice Johnson",
-    "email": "alice.johnson@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/women/1.jpg"
-  },
-  {
-    "name": "Bob Smith",
-    "email": "bob.smith@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/men/2.jpg"
-  },
-  {
-    "name": "Catherine Brown",
-    "email": "catherine.brown@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/women/3.jpg"
-  },
-  {
-    "name": "David Williams",
-    "email": "david.williams@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/men/4.jpg"
-  },
-  {
-    "name": "Eva Miller",
-    "email": "eva.miller@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/women/5.jpg"
-  },
-  {
-    "name": "Frank Thomas",
-    "email": "frank.thomas@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/men/6.jpg"
-  },
-  {
-    "name": "Grace Lee",
-    "email": "grace.lee@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/women/7.jpg"
-  },
-  {
-    "name": "Henry Wilson",
-    "email": "henry.wilson@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/men/8.jpg"
-  },
-  {
-    "name": "Isabella Martinez",
-    "email": "isabella.martinez@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/women/9.jpg"
-  },
-  {
-    "name": "Jack Taylor",
-    "email": "jack.taylor@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/men/10.jpg"
-  }, {
-    "name": "Alice Johnson",
-    "email": "alice.johnson@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/women/1.jpg"
-  },
-  {
-    "name": "Bob Smith",
-    "email": "bob.smith@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/men/2.jpg"
-  },
-  {
-    "name": "Catherine Brown",
-    "email": "catherine.brown@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/women/3.jpg"
-  },
-  {
-    "name": "David Williams",
-    "email": "david.williams@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/men/4.jpg"
-  },
-  {
-    "name": "Eva Miller",
-    "email": "eva.miller@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/women/5.jpg"
-  },
-  {
-    "name": "Frank Thomas",
-    "email": "frank.thomas@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/men/6.jpg"
-  },
-  {
-    "name": "Grace Lee",
-    "email": "grace.lee@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/women/7.jpg"
-  },
-  {
-    "name": "Henry Wilson",
-    "email": "henry.wilson@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/men/8.jpg"
-  },
-  {
-    "name": "Isabella Martinez",
-    "email": "isabella.martinez@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/women/9.jpg"
-  },
-  {
-    "name": "Jack Taylor",
-    "email": "jack.taylor@example.com",
-    "profile_pic": "https://randomuser.me/api/portraits/men/10.jpg"
-  },
+  }
 ]
 
 
@@ -189,6 +78,11 @@ function PeopleList({ setActiveChat }) {
   useEffect(() => {
     getuser();
   }, [getuser]);
+
+  useEffect(() => {
+    const message = "Hello"
+    socket.emit('sendMessage', message);
+  })
 
   const handleOnLogout = () => {
     localStorage.clear();
