@@ -64,7 +64,7 @@
     font-size: 15px;
     top: 15px;
     background-color: #00303d;
-    width: 18vw;
+    width: 81%;
     padding: 15px;
     border-style: solid;
     border-width: 2px;
@@ -82,12 +82,13 @@
     top: 140px;
     max-height: 50%;
     border-radius:0 0 15px 15px ;
-    width: 19.7vw;
     z-index: -1;
 }
 
 .messagingpage .PeopleList .Search .searchresults .Friend{
     height: 70px;
+    width: 19.4vw;
+    margin: 3px 2px;
 }
 
 .messagingpage .PeopleList .Search .searchresults .Friend img{
@@ -128,6 +129,9 @@
     transition: 250ms;
     background-color: rgb(31, 31, 31);
     cursor: pointer;
+    border: none;
+    color: white;
+    font-size: 15px;
 }
 
 .messagingpage .PeopleList .Friend:hover {

@@ -115,10 +115,10 @@ function PeopleList({ setActiveChat }) {
           <input type='text' placeholder="Search" onChange={handleOnSearch} />
           {search && <div className='searchresults'>
             {people.map((friend, index) => (
-              <div key={index} className='Friend' onClick={() => setActiveChat(index)}>
+              <button key={index} className='Friend' onClick={() => setActiveChat(index)}>
                 <img src={friend.profile_pic} alt="profile pic" />
                 <label>{friend.name}</label>
-              </div>
+              </button>
             ))}
             <label className='endoflist'>*****End of List*****</label>
           </div>}
@@ -126,10 +126,10 @@ function PeopleList({ setActiveChat }) {
       </div>
       <div className='AllChats'>
         {friends.map((friend, index) => (
-          <div key={index} className='Friend' onClick={() => setActiveChat(index)}>
+          <button key={index} className='Friend' onClick={() => setActiveChat(index)}>
             <img src={friend.profile_pic} alt="profile pic" />
             <label>{friend.name}</label>
-          </div>
+          </button>
         ))}
       </div>
     </div>
