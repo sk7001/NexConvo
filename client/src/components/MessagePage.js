@@ -27,7 +27,7 @@ export default function MessagePage() {
   return (
     <div className='messagingpage'>
       <PeopleList setActiveChat={setActiveChat} friends={friends} />
-      {ActiveChat&&<Messages activeFriend={friends[ActiveChat]} />}
+      <Messages activeFriend={friends[ActiveChat]} />
     </div>
   );
 }
