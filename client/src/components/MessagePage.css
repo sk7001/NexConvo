@@ -13,7 +13,7 @@
     scrollbar-width: none;
 }
 
-.messagingpage .PeopleList .ProfileBox{
+.messagingpage .PeopleList .ProfileBox {
     position: sticky;
     padding-top: 15px;
     top: 0px;
@@ -34,8 +34,9 @@
     cursor: pointer;
     transition: 250ms;
 }
-.messagingpage .PeopleList .ProfileBox .Profile img:hover{
-    scale:1.1;
+
+.messagingpage .PeopleList .ProfileBox .Profile img:hover {
+    scale: 1.1;
 }
 
 .messagingpage .PeopleList .ProfileBox .Profile .Logout {
@@ -77,7 +78,7 @@
     border-radius: 50px;
 }
 
-.messagingpage .PeopleList .Search .searchresults{
+.messagingpage .PeopleList .Search .searchresults {
     position: relative;
     background-color: #00303d;
     overflow-y: auto;
@@ -86,26 +87,26 @@
     padding-top: 30px;
     top: 140px;
     max-height: 50%;
-    border-radius:0 0 15px 15px ;
+    border-radius: 0 0 15px 15px;
     z-index: -1;
 }
 
-.messagingpage .PeopleList .Search .searchresults .Friend{
+.messagingpage .PeopleList .Search .searchresults .Friend {
     height: 70px;
     width: 19.4vw;
     margin: 3px 2px;
 }
 
-.messagingpage .PeopleList .Search .searchresults .Friend img{
-    height:50px;
+.messagingpage .PeopleList .Search .searchresults .Friend img {
+    height: 50px;
     aspect-ratio: 1/1;
     object-fit: cover;
-    margin:10px;
+    margin: 10px;
     padding: 10px;
     border-radius: 100%;
 }
 
-.messagingpage .PeopleList .Search .searchresults .endoflist{
+.messagingpage .PeopleList .Search .searchresults .endoflist {
     text-align: center;
     width: 100%;
     position: absolute;
@@ -144,7 +145,14 @@
 }
 
 
-
+/*No active chats*/
+.noactiveselected {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
 
 /* Messages */
 .Messages-box {
@@ -173,6 +181,22 @@
     width: 50px;
     border-radius: 100%;
     margin: 15px;
+}
+
+.Messages-box .Name button {
+    background-color: #4a0000;
+    color: white;
+    border: none;
+    cursor: pointer;
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    padding: 6px 25px;
+    transition: 150ms;
+}
+.Messages-box .Name button:hover{
+    background-color: #6a0000;
+
 }
 
 .Messages-box .Messages {

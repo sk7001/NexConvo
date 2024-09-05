@@ -1,33 +1,38 @@
-import axios from 'axios'
-import React, { useCallback, useEffect, useState } from 'react'
-import "./MessagePage.css"
+import axios from 'axios';
+import React, { useCallback, useEffect, useState } from 'react';
+import "./MessagePage.css";
 import { socket } from '../socket';
 
-
-
 export default function MessagePage() {
-  const [ActiveChat, setActiveChat] = useState(0);
-  //getfriendsdetails
+  const [ActiveChat, setActiveChat] = useState("");
   const [friends, setFriends] = useState([]);
+
   const getfriends = useCallback(async () => {
     const token = localStorage.getItem("token");
-    const response = await axios.get('http://localhost:8000/api/friends', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-    const friends = response.data.friends
-    setFriends(friends)
+    const finaltoken = `Bearer ${token}`;
+
+    socket.emit("getfriends", finaltoken);
+
+    const handleFriends = (data) => {
+      setFriends(data);
+    };
+
+    socket.on("friends", handleFriends);
+
+    // Cleanup listener on unmount
+    return () => {
+      socket.off("friends", handleFriends);
+    };
   }, []);
 
   useEffect(() => {
     getfriends();
-  }, [getfriends])
+  }, [getfriends]);
 
   return (
     <div className='messagingpage'>
       <PeopleList setActiveChat={setActiveChat} friends={friends} />
-      <Messages activeFriend={friends[ActiveChat]} />
+      <Messages activeChat={friends[ActiveChat]} setActiveChat={setActiveChat} />
     </div>
   );
 }
@@ -39,7 +44,6 @@ function PeopleList({ setActiveChat, friends }) {
     profile_pic: ''
   });
 
-  //getuser details
   const getuser = useCallback(async () => {
     const token = localStorage.getItem("token");
     const response = await axios.get('http://localhost:8000/api/userdetails', {
@@ -54,36 +58,35 @@ function PeopleList({ setActiveChat, friends }) {
     });
   }, []);
 
-
   useEffect(() => {
     getuser();
-  }, [getuser, friends]);
+  }, [getuser]); // Removed 'friends' dependency
 
   const handleOnLogout = () => {
     localStorage.clear();
     window.location.reload();
   };
 
+  const [searchState, setSearchState] = useState({ search: "", people: [] });
 
-  //search bar
-  const [search, setsearch] = useState("");
-  const [people, setpeople] = useState([]);
   const handleOnSearch = (event) => {
     const currentSearch = event.target.value;
-    setsearch(currentSearch);
-    socket.emit("searchpeople", currentSearch)
-    socket.on("searchresult", (people) => {
-      if (people) {
-        setpeople(people)
-        return () => {
-          socket.off("searchresult");
-        };
-      }
-      else {
-        setpeople([])
-      }
-    })
-  }
+    setSearchState((prevState) => ({ ...prevState, search: currentSearch }));
+    socket.emit("searchpeople", currentSearch);
+  };
+
+  useEffect(() => {
+    const handleSearchResult = (people) => {
+      setSearchState((prevState) => ({ ...prevState, people: people || [] }));
+    };
+
+    socket.on("searchresult", handleSearchResult);
+
+    return () => {
+      socket.off("searchresult", handleSearchResult);
+    };
+  }, []);
+
   return (
     <div className='PeopleList'>
       <div className='ProfileBox'>
@@ -93,8 +96,8 @@ function PeopleList({ setActiveChat, friends }) {
         </div>
         <div className='Search'>
           <input type='text' placeholder="Search" onChange={handleOnSearch} />
-          {search && <div className='searchresults'>
-            {people.map((friend, index) => (
+          {searchState.search && <div className='searchresults'>
+            {searchState.people.map((friend, index) => (
               <button key={index} className='Friend' onClick={() => setActiveChat(index)}>
                 <img src={friend.profile_pic} alt="profile pic" />
                 <label>{friend.name}</label>
@@ -116,7 +119,10 @@ function PeopleList({ setActiveChat, friends }) {
   );
 }
 
-function Messages({ activeFriend }) {
+function Messages({ activeChat, setActiveChat }) {
+  if (!activeChat) {
+    return <div className='noactiveselected'><h1>No active chat selected</h1></div>;
+  }
   const sampleMessages = [
     { type: 'received', text: 'Hey there! How are you?' },
     { type: 'sent', text: 'I am good, how about you?' },
@@ -125,31 +131,19 @@ function Messages({ activeFriend }) {
     { type: 'received', text: 'Just working on some projects. You?' },
     { type: 'sent', text: 'Same here, busy with coding and work.' },
     { type: 'received', text: 'Nice! Keep up the good work.' },
-    { type: 'sent', text: 'Thanks! Will do.' },
-    { type: 'received', text: 'Hey there! How are you?' },
-    { type: 'sent', text: 'I am good, how about you?' },
-    { type: 'received', text: 'I am doing well, thanks!' },
-    { type: 'sent', text: 'What have you been up to lately?' },
-    { type: 'received', text: 'Just working on some projects. You?' },
-    { type: 'sent', text: 'Same here, busy with coding and work.' },
-    { type: 'received', text: 'Nice! Keep up the good work.' },
-    { type: 'sent', text: 'Thanks! Will do.' },
-    { type: 'received', text: 'Hey there! How are you?' },
-    { type: 'sent', text: 'I am good, how about you?' },
-    { type: 'received', text: 'I am doing well, thanks!' },
-    { type: 'sent', text: 'What have you been up to lately?' },
-    { type: 'received', text: 'Just working on some projects. You?' },
-    { type: 'sent', text: 'Same here, busy with coding and work.' },
-    { type: 'received', text: 'Nice! Keep up the good work.' },
     { type: 'sent', text: 'Thanks! Will do.' }
-  ];
+  ]
+
+  const handleOnClose = () => {
+    setActiveChat(null)
+  }
 
   return (
     <div className="Messages-box">
       <div className="Name">
-        <label>{console.log(activeFriend)}</label>
-        {/* <img src={activeFriend.profile_pic} alt={activeFriend.name} />
-        <label>{activeFriend.name}</label> */}
+        <img src={activeChat.profile_pic} alt={activeChat.name} />
+        <label>{activeChat.name}</label>
+        <button onClick={handleOnClose}><h1>x</h1></button>
       </div>
       <div className="Messages">
         {sampleMessages.map((message, index) => (

@@ -1,3 +1,4 @@
+const getUserDetailsFromToken = require("./helper/getUserDetailsFromToken");
 const { io } = require("./index");
 const UserModel = require("./models/UserModel");
 
@@ -16,4 +17,11 @@ io.on('connection', (socket) => {
         }).select("-password");
         socket.emit('searchresult', users);
     });
+    //getfriends
+    socket.on("getfriends", async (token) => {
+        console.log(token)
+        const user = await getUserDetailsFromToken(token)
+        const friends = await UserModel.find({ _id: { $ne: user._id } }).sort("name")
+        socket.emit("friends", friends)
+    })
 });
