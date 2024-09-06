@@ -7,6 +7,12 @@ io.on('connection', (socket) => {
     // Log the socket ID
     console.log(`Client connected ${socket.id}`);
 
+    //disconnect
+    socket.on('disconnect', async () => {
+        console.log(`Client disconnected ${socket.id}`);
+        await UserModel.updateOne({socketId:null})
+    });
+
     // Search for people
     socket.on('searchpeople', async (search) => {
         const users = await UserModel.find({
@@ -21,6 +27,14 @@ io.on('connection', (socket) => {
     //getfriends
     socket.on("getfriends", async (token) => {
         const user = await getUserDetailsFromToken(token)
+        const owner = await UserModel.updateOne(
+            { _id: user._id },
+            {
+                $set: {
+                    socketId: socket.id
+                }
+            }
+        )
         const friends = await conversationModel.find({
             $or: [
                 { receiver: user._id },
@@ -30,18 +44,17 @@ io.on('connection', (socket) => {
         const friendArray = await Promise.all(friends.map(async (friend) => {
             if (friend.receiver.toString() === user._id.toString()) {
                 const sender = await UserModel.findOne({ _id: friend.sender }).select("-password");
-                if (!friend.messages==[]) {
+                if (!friend.messages == []) {
                     return sender;
                 }
             } else {
                 const receiver = await UserModel.findOne({ _id: friend.receiver }).select("-password");
-                if (!friend.messages==[]) {
+                if (!friend.messages == []) {
                     return receiver;
                 }
             }
         }));
         socket.emit("friends", friendArray)
-
     })
 
 
@@ -62,7 +75,4 @@ io.on('connection', (socket) => {
 
         socket.emit("messageshistory", conversation.messages);
     });
-
-
-    //get
 });

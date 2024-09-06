@@ -39,11 +39,10 @@ export default function RegisterPage() {
     try{
       toast.loading("Resistering user")
       console.log({ user, profilepic })
-      const response = await axios.post(`http://localhost:8000/api/register`, { user, profilepic })
+      const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/register`, { user, profilepic })
       console.log(response.data)
       toast.dismiss()
       toast.success(response.data.message)
-      toast.success("Please signin again to continue.")
       navigate("/login")
     }catch(error){
       toast.dismiss()

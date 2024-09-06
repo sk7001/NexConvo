@@ -20,6 +20,9 @@ const UserSchema = new mongoose.Schema({
     },
     profile_pic: {
         type: String
+    },
+    socketId:{
+        type:String
     }
 },
     {

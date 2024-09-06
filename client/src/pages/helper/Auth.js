@@ -1,12 +1,15 @@
 import React from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import Login from '../Login'
 
 export default function Auth() {
+    const navigate = useNavigate()
     const token = localStorage.getItem("token")
-    return (
-        <div>
-            {token ? <Outlet /> : <Login />}
-        </div>
-    )
+    if (token) {
+        return <Outlet />
+    }
+    else {
+        navigate("/login")
+        return <Login />
+    }
 }

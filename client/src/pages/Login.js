@@ -25,7 +25,7 @@ export function CheckEmailPage({ setStep }) {
     const handleOnClick = async (event) => {
         event.preventDefault()
         try {
-            const response = await axios.post("http://localhost:8000/api/email", user)
+            const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/email`, user)
             localStorage.setItem("userId", response.data.checkEmail._id)
             localStorage.setItem("name", response.data.checkEmail.name)
             localStorage.setItem("profile_pic", response.data.checkEmail.profile_pic)
@@ -70,11 +70,12 @@ export function CheckPasswordPage() {
         try {
             toast.loading("Logging in...")
             console.log(user)
-            const response = await axios.post("http://localhost:8000/api/password", user)
+            const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/password`, user)
             console.log(response)
             toast.dismiss()
             toast.success(response.data.message)
-            navigate("/user/messagepage")
+            navigate("/user")
+            localStorage.clear()
             localStorage.setItem("token", response.data.token)
         } catch (error) {
             toast.dismiss()

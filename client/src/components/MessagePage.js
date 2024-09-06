@@ -28,7 +28,7 @@ export default function MessagePage() {
     getfriends();
   }, [getfriends]);
 
-  const activeChat = friends.find(friend => friend._id === activeChatId);
+  const activeChat = friends?.find(friend => friend._id === activeChatId);
 
   return (
     <div className='messagingpage'>
@@ -47,7 +47,7 @@ function PeopleList({ setActiveChatId, friends }) {
 
   const getuser = useCallback(async () => {
     const token = localStorage.getItem("token");
-    const response = await axios.get('http://localhost:8000/api/userdetails', {
+    const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/userdetails`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -112,7 +112,7 @@ function PeopleList({ setActiveChatId, friends }) {
           <input type='text' placeholder="Search" onChange={handleOnSearch} />
           {searchState.search && <div className='searchresults'>
             {searchState.people.map((friend) => (
-              <button key={friend._id} className='Friend' onClick={() => {handleOnChat(friend._id); window.location.reload()}}>
+              <button key={friend._id} className='Friend' onClick={() => { handleOnChat(friend._id); window.location.reload() }}>
                 <img src={friend.profile_pic} alt="profile pic" />
                 <label>{friend.name}</label>
               </button>
