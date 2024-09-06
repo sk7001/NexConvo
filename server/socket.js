@@ -27,7 +27,8 @@ io.on('connection', (socket) => {
             //     { receiver: user._id },
             //     { sender: user._id }
             // ]
-        })
+            _id:{$ne:user._id }
+        }).sort("name")
         // const friendarray = []
         // friends.map((friend) => {
         //     if (friend.receiver === user._id) {
