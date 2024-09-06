@@ -200,7 +200,7 @@
 }
 
 .Messages-box .Messages {
-    margin-top: 7%;
+    margin-top: 10vh;
     display: flex;
     flex-direction: column;
 }
