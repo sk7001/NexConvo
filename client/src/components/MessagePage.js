@@ -112,7 +112,7 @@ function PeopleList({ setActiveChatId, friends }) {
           <input type='text' placeholder="Search" onChange={handleOnSearch} />
           {searchState.search && <div className='searchresults'>
             {searchState.people.map((friend) => (
-              <button key={friend._id} className='Friend' onClick={() => setActiveChatId(friend._id)}>
+              <button key={friend._id} className='Friend' onClick={() => {handleOnChat(friend._id); window.location.reload()}}>
                 <img src={friend.profile_pic} alt="profile pic" />
                 <label>{friend.name}</label>
               </button>

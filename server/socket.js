@@ -22,36 +22,27 @@ io.on('connection', (socket) => {
     //getfriends
     socket.on("getfriends", async (token) => {
         const user = await getUserDetailsFromToken(token)
-        const friends = await UserModel.find({
-            // $or: [
-            //     { receiver: user._id },
-            //     { sender: user._id }
-            // ]
-            _id:{$ne:user._id }
+        const friends = await conversationModel.find({
+            $or: [
+                { receiver: user._id },
+                { sender: user._id }
+            ]
         }).sort("name")
-        // const friendarray = []
-        // friends.map((friend) => {
-        //     if (friend.receiver === user._id) {
-        //         const sender = UserModel.findOne({ _id: friend.sender })
-        //         friendarray.push(sender)
-        //     }
-        //     else {
-        //         const receiver = UserModel.findOne({ _id: friend.receiver })
-        //         friendarray.push(receiver)
-        //     }
-        // })
-        // console.log(friendarray)
-        // const activeFriendarray = []
-        // friendarray.map((friend)=>{
-        //     const activeFriend = UserModel.find({ _id: friend })
-        //     console.log(activeFriend)
-        // if (activeFriend) {
-        //     activeFriendarray.push(activeFriend)
-        // }
-        // })
-        // friends.receiver == user._id ? friend.push(friends.sender) : friend.push(friends.receiver)
-        // console.log(activeFriendarray)
-        socket.emit("friends", friends)
+        const friendArray = await Promise.all(friends.map(async (friend) => {
+            if (friend.receiver.toString() === user._id.toString()) {
+                const sender = await UserModel.findOne({ _id: friend.sender }).select("-password");
+                if (!friend.messages==[]) {
+                    return sender;
+                }
+            } else {
+                const receiver = await UserModel.findOne({ _id: friend.receiver }).select("-password");
+                if (!friend.messages==[]) {
+                    return receiver;
+                }
+            }
+        }));
+        console.log(friendArray)
+        socket.emit("friends", friendArray)
 
     })
 
