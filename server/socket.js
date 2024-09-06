@@ -9,7 +9,6 @@ io.on('connection', (socket) => {
 
     // Search for people
     socket.on('searchpeople', async (search) => {
-        console.log('Searching people:', search);
         const users = await UserModel.find({
             $or: [
                 { name: { $regex: '^' + search, $options: 'i' } },
@@ -41,7 +40,6 @@ io.on('connection', (socket) => {
                 }
             }
         }));
-        console.log(friendArray)
         socket.emit("friends", friendArray)
 
     })
