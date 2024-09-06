@@ -88,6 +88,19 @@ function PeopleList({ setActiveChatId, friends }) {
     };
   }, []);
 
+  //select and start chat
+  const [Messages, setMessages] = useState([])
+  const handleOnChat = (id) => {
+    setActiveChatId(id)
+    const token = localStorage.getItem("token")
+    const finaltoken = "Bearer " + token
+    socket.emit("startchat", id, finaltoken)
+    socket.on("messageshistory", (messages) => {
+      setMessages(messages)
+      console.log(Messages)
+    })
+  }
+
   return (
     <div className='PeopleList'>
       <div className='ProfileBox'>
@@ -110,7 +123,7 @@ function PeopleList({ setActiveChatId, friends }) {
       </div>
       <div className='AllChats'>
         {friends.map((friend) => (
-          <button key={friend._id} className='Friend' onClick={() => setActiveChatId(friend._id)}>
+          <button key={friend._id} className='Friend' onClick={() => handleOnChat(friend._id)}>
             <img src={friend.profile_pic} alt="profile pic" />
             <label>{friend.name}</label>
           </button>
@@ -125,7 +138,7 @@ function Messages({ activeChat, setActiveChatId }) {
     return <div className='noactiveselected'><h1>No active chat selected</h1></div>;
   }
 
-  const sampleMessages = [
+  const Messages = [
     { type: 'received', text: 'Hey there! How are you?' },
     { type: 'sent', text: 'I am good, how about you?' },
     { type: 'received', text: 'I am doing well, thanks!' },
@@ -148,7 +161,7 @@ function Messages({ activeChat, setActiveChatId }) {
         <button onClick={handleOnClose}><h1>x</h1></button>
       </div>
       <div className="Messages">
-        {sampleMessages.map((message, index) => (
+        {Messages.map((message, index) => (
           <div key={index} className={`MessageItem ${message.type}`}>
             <label>{message.text}</label>
           </div>
