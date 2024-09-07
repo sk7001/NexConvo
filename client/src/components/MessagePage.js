@@ -28,7 +28,7 @@ export default function MessagePage() {
 
   useEffect(() => {
     getfriends();
-  }, [getfriends]);
+  });
 
   const activeChat = friends?.find(friend => friend._id === activeChatId);
 

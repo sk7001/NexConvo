@@ -10,7 +10,14 @@ io.on('connection', (socket) => {
     //disconnect
     socket.on('disconnect', async () => {
         console.log(`Client disconnected ${socket.id}`);
-        await UserModel.updateOne({socketId:null})
+        await UserModel.updateOne(
+            { socketId: socket.id },
+            {
+                $set: {
+                    socketId: null
+                }
+            }
+        )
     });
 
     // Search for people
