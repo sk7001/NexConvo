@@ -7,9 +7,22 @@ io.on('connection', (socket) => {
     // Log the socket ID
     console.log(`Client connected ${socket.id}`);
 
-    //disconnect
-    socket.on('disconnect', async () => {
+    //disconnect on logout button
+    socket.on('logout', async (token) => {
+        const user = await getUserDetailsFromToken(token)
+        await UserModel.updateOne(
+            { _id: user._id },
+            {
+                $set: {
+                    socketId: null
+                }
+            }
+        )
         console.log(`Client disconnected ${socket.id}`);
+    })
+
+    //automatic disconnect
+    socket.on('disconnect', async () => {
         await UserModel.updateOne(
             { socketId: socket.id },
             {
@@ -18,6 +31,7 @@ io.on('connection', (socket) => {
                 }
             }
         )
+        console.log(`Client disconnected ${socket.id}`);
     });
 
     // Search for people
@@ -34,7 +48,7 @@ io.on('connection', (socket) => {
     //getfriends
     socket.on("getfriends", async (token) => {
         const user = await getUserDetailsFromToken(token)
-        const owner = await UserModel.updateOne(
+        await UserModel.updateOne(
             { _id: user._id },
             {
                 $set: {

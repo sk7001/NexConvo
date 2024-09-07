@@ -17,6 +17,7 @@ export default function MessagePage() {
 
     const handleFriends = (data) => {
       setFriends(data);
+      console.log(data)
     };
 
     socket.on("friends", handleFriends);
@@ -67,6 +68,9 @@ function PeopleList({ setActiveChatId, friends }) {
   }, [getuser]);
 
   const handleOnLogout = () => {
+    const token = localStorage.getItem("token")
+    const finaltoken = `Bearer ${token}`
+    socket.emit("logout", finaltoken)
     localStorage.clear();
     navigate("/login")
   };
