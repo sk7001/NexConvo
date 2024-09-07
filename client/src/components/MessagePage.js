@@ -2,6 +2,8 @@ import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import "./MessagePage.css";
 import { socket } from '../socket';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function MessagePage() {
   const [activeChatId, setActiveChatId] = useState(null);
@@ -44,6 +46,7 @@ function PeopleList({ setActiveChatId, friends }) {
     email: '',
     profile_pic: ''
   });
+  const navigate = useNavigate()
 
   const getuser = useCallback(async () => {
     const token = localStorage.getItem("token");
@@ -65,7 +68,7 @@ function PeopleList({ setActiveChatId, friends }) {
 
   const handleOnLogout = () => {
     localStorage.clear();
-    window.location.reload();
+    navigate("/login")
   };
 
   const [searchState, setSearchState] = useState({ search: "", people: [] });
@@ -124,7 +127,7 @@ function PeopleList({ setActiveChatId, friends }) {
       <div className='AllChats'>
         {friends.map((friend) => (
           <button key={friend._id} className='Friend' onClick={() => handleOnChat(friend._id)}>
-            <img src={friend.profile_pic} alt="profile pic" />
+            <img src={friend.profile_pic} style={friend.socketId?{borderStyle:'solid', borderColor:'yellowgreen'}:{borderStyle:'solid', borderColor:'transparent'}} alt="profile pic" />
             <label>{friend.name}</label>
           </button>
         ))}
