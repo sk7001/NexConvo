@@ -29,7 +29,7 @@ export default function MessagePage() {
 
   useEffect(() => {
     getfriends();
-  }, [getfriends]);
+  });
 
   const activeChat = friends?.find(friend => friend._id === activeChatId);
 
@@ -101,7 +101,7 @@ function PeopleList({ setActiveChatId, friends }) {
     setActiveChatId(id)
     const token = localStorage.getItem("token")
     const finaltoken = "Bearer " + token
-    socket.emit("startchat",id, finaltoken)
+    socket.emit("startchat", id, finaltoken)
     socket.emit("getmessages", finaltoken, id)
     socket.on("messageshistory", (messages) => {
       // setMessages(messages)
@@ -191,9 +191,9 @@ function Messages({ activeChat, setActiveChatId }) {
           </div>
         ))}
       </div>
-      <form className='MessageInputBox'>
-        <input type="text" placeholder="Type a message..." value={messageInput} onChange={handleOnMessageInput} />
-        <button type="submit" className='SendMessage' onClick={handleOnSendMessage}>Send</button>
+      <form className='MessageInputBox' >
+        <input type="text"style={activeChat.socketId?{}:{borderRadius:"15px", textAlign:'center', fontSize:'20px'}} placeholder={activeChat.socketId?"Type a message...":"User is Offline"} value={messageInput} onChange={handleOnMessageInput} disabled={activeChat.socketId?false:true} />
+        {activeChat.socketId && <button type="submit" className='SendMessage' onClick={handleOnSendMessage}>Send</button>}
       </form>
     </div>
   );
