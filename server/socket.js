@@ -1,6 +1,6 @@
 const getUserDetailsFromToken = require("./helper/getUserDetailsFromToken");
 const { io } = require("./index");
-const { conversationModel } = require("./models/Conversation");
+const { conversationModel, messageModel } = require("./models/Conversation");
 const UserModel = require("./models/UserModel");
 
 io.on('connection', (socket) => {
@@ -47,7 +47,7 @@ io.on('connection', (socket) => {
 
     //getfriends
     socket.on("getfriends", async (token) => {
-        const user = await getUserDetailsFromToken(token)
+        const user = await getUserDetailsFromToken(token);
         await UserModel.updateOne(
             { _id: user._id },
             {
@@ -55,28 +55,33 @@ io.on('connection', (socket) => {
                     socketId: socket.id
                 }
             }
-        )
-        const friends = await conversationModel.find({
+        );
+
+        const conversations = await conversationModel.find({
             $or: [
                 { receiver: user._id },
                 { sender: user._id }
             ]
-        }).sort("name")
-        const friendArray = await Promise.all(friends.map(async (friend) => {
-            if (friend.receiver.toString() === user._id.toString()) {
-                const sender = await UserModel.findOne({ _id: friend.sender }).select("-password");
-                if (!friend.messages == []) {
-                    return sender;
-                }
+        });
+
+        const friendIds = new Set();
+
+        conversations.forEach(conversation => {
+            if (conversation.receiver.toString() === user._id.toString()) {
+                friendIds.add(conversation.sender.toString());
             } else {
-                const receiver = await UserModel.findOne({ _id: friend.receiver }).select("-password");
-                if (!friend.messages == []) {
-                    return receiver;
-                }
+                friendIds.add(conversation.receiver.toString());
             }
+        });
+
+        const friendArray = await Promise.all(Array.from(friendIds).map(async (friendId) => {
+            const friend = await UserModel.findOne({ _id: friendId }).select("-password");
+            return friend;
         }));
-        socket.emit("friends", friendArray)
-    })
+
+        console.log(friendArray);
+        socket.emit("friends", friendArray);
+    });
 
 
     //startchat
@@ -96,4 +101,37 @@ io.on('connection', (socket) => {
 
         socket.emit("messageshistory", conversation.messages);
     });
+
+
+    //send messages
+    socket.on("sendmessage", async (token, receiver, messageInput) => {
+        const user = await getUserDetailsFromToken(token);
+        const conversation = await conversationModel.findOne({ sender: user._id, receiver: receiver })
+        if (!conversation) {
+            const conversation = new conversationModel({ sender: user._id, receiver: receiver });
+            await conversation.save();
+        }
+        const newMessage = new messageModel({
+            text: messageInput
+        });
+        await newMessage.save();
+        console.log(conversation)
+        conversation.messages.push(newMessage._id);
+        await conversation.save();
+        console.log(conversation)
+        // socket.emit("newmessage", newMessage);
+    });
+
+
+    //get all the messages from the client
+    // socket.on("getmessages", async (data, token) => {
+    //     const user = await getUserDetailsFromToken(token);
+    //     const conversation = await conversationModel.findOne({
+    //         $or: [
+    //             { sender: user._id, receiver: data.id },
+    //             { sender: data.id, receiver: user._id }
+    //         ]
+    //     }).populate("messages");
+    //     socket.emit("messageshistory", conversation.messages);
+    // });
 });

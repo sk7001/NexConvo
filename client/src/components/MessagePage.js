@@ -29,7 +29,7 @@ export default function MessagePage() {
 
   useEffect(() => {
     getfriends();
-  });
+  }, [getfriends]);
 
   const activeChat = friends?.find(friend => friend._id === activeChatId);
 
@@ -131,7 +131,7 @@ function PeopleList({ setActiveChatId, friends }) {
       <div className='AllChats'>
         {friends.map((friend) => (
           <button key={friend._id} className='Friend' onClick={() => handleOnChat(friend._id)}>
-            <img src={friend.profile_pic} style={friend.socketId?{borderStyle:'solid', borderColor:'yellowgreen'}:{borderStyle:'solid', borderColor:'transparent'}} alt="profile pic" />
+            <img src={friend.profile_pic} style={friend.socketId ? { borderStyle: 'solid', borderColor: 'yellowgreen' } : { borderStyle: 'solid', borderColor: 'transparent' }} alt="profile pic" />
             <label>{friend.name}</label>
           </button>
         ))}
@@ -141,6 +141,8 @@ function PeopleList({ setActiveChatId, friends }) {
 }
 
 function Messages({ activeChat, setActiveChatId }) {
+  const [messageInput, setMessageInput] = useState("");
+
   if (!activeChat) {
     return <div className='noactiveselected'><h1>No active chat selected</h1></div>;
   }
@@ -160,6 +162,19 @@ function Messages({ activeChat, setActiveChatId }) {
     setActiveChatId(null)
   }
 
+  const handleOnMessageInput = (event) => {
+    setMessageInput(event.target.value);
+  }
+
+  const handleOnSendMessage = () => {
+    const token = localStorage.getItem("token")
+    const chatId = activeChat._id
+    const finaltoken = `Bearer ${token}`
+    console.log(messageInput)
+    socket.emit("sendmessage", finaltoken, chatId, messageInput)
+    setMessageInput("")
+  }
+
   return (
     <div className="Messages-box">
       <div className="Name">
@@ -175,8 +190,8 @@ function Messages({ activeChat, setActiveChatId }) {
         ))}
       </div>
       <div className='MessageInputBox'>
-        <input type="text" placeholder="Type a message..." />
-        <button className='SendMessage'>Send</button>
+        <input type="text" placeholder="Type a message..." value={messageInput} onChange={handleOnMessageInput} />
+        <button className='SendMessage' onClick={handleOnSendMessage}>Send</button>
       </div>
     </div>
   );
