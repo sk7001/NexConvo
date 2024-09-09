@@ -119,6 +119,7 @@
     width: 50px;
     border-radius: 100%;
     aspect-ratio: 1/1;
+    object-fit: cover;
     margin: 15px;
 }
 
@@ -181,6 +182,8 @@
 
 .Messages-box .Name img {
     width: 50px;
+    aspect-ratio: 1/1;
+    object-fit: cover;
     border-radius: 100%;
     margin: 15px;
 }
