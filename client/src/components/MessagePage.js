@@ -101,10 +101,11 @@ function PeopleList({ setActiveChatId, friends }) {
     setActiveChatId(id)
     const token = localStorage.getItem("token")
     const finaltoken = "Bearer " + token
-    socket.emit("startchat", id, finaltoken)
+    socket.emit("startchat",id, finaltoken)
+    socket.emit("getmessages", finaltoken, id)
     socket.on("messageshistory", (messages) => {
-      setMessages(messages)
-      console.log(Messages)
+      // setMessages(messages)
+      console.log(messages)
     })
   }
 
@@ -190,10 +191,10 @@ function Messages({ activeChat, setActiveChatId }) {
           </div>
         ))}
       </div>
-        <form className='MessageInputBox'>
+      <form className='MessageInputBox'>
         <input type="text" placeholder="Type a message..." value={messageInput} onChange={handleOnMessageInput} />
         <button type="submit" className='SendMessage' onClick={handleOnSendMessage}>Send</button>
-        </form>
+      </form>
     </div>
   );
 }

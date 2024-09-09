@@ -46,6 +46,7 @@ io.on('connection', (socket) => {
     });
 
     //getfriends
+
     socket.on("getfriends", async (token) => {
         const user = await getUserDetailsFromToken(token);
         await UserModel.updateOne(
@@ -56,16 +57,13 @@ io.on('connection', (socket) => {
                 }
             }
         );
-
         const conversations = await conversationModel.find({
             $or: [
                 { receiver: user._id },
                 { sender: user._id }
             ]
         });
-
         const friendIds = new Set();
-
         conversations.forEach(conversation => {
             if (conversation.receiver.toString() === user._id.toString()) {
                 friendIds.add(conversation.sender.toString());
@@ -73,13 +71,10 @@ io.on('connection', (socket) => {
                 friendIds.add(conversation.receiver.toString());
             }
         });
-
         const friendArray = await Promise.all(Array.from(friendIds).map(async (friendId) => {
             const friend = await UserModel.findOne({ _id: friendId }).select("-password");
             return friend;
         }));
-
-        console.log(friendArray);
         socket.emit("friends", friendArray);
     });
 
@@ -115,23 +110,22 @@ io.on('connection', (socket) => {
             text: messageInput
         });
         await newMessage.save();
-        console.log(conversation)
         conversation.messages.push(newMessage._id);
         await conversation.save();
-        console.log(conversation)
         // socket.emit("newmessage", newMessage);
     });
 
 
     //get all the messages from the client
-    // socket.on("getmessages", async (data, token) => {
-    //     const user = await getUserDetailsFromToken(token);
-    //     const conversation = await conversationModel.findOne({
-    //         $or: [
-    //             { sender: user._id, receiver: data.id },
-    //             { sender: data.id, receiver: user._id }
-    //         ]
-    //     }).populate("messages");
-    //     socket.emit("messageshistory", conversation.messages);
-    // });
+    socket.on("getmessages", async (token, receiver) => {
+        const user = await getUserDetailsFromToken(token);
+        const conversation = await conversationModel.find({
+            $or: [
+                { sender: user._id,receiver:receiver},
+                { receiver: user._id, sender:receiver }
+            ]
+        }).populate("messages")
+        console.log(conversation)
+        socket.emit("messageshistory", conversation);
+    });
 });
