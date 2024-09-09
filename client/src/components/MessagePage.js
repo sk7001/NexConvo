@@ -166,7 +166,8 @@ function Messages({ activeChat, setActiveChatId }) {
     setMessageInput(event.target.value);
   }
 
-  const handleOnSendMessage = () => {
+  const handleOnSendMessage = (event) => {
+    event.preventDefault();
     const token = localStorage.getItem("token")
     const chatId = activeChat._id
     const finaltoken = `Bearer ${token}`
@@ -189,10 +190,10 @@ function Messages({ activeChat, setActiveChatId }) {
           </div>
         ))}
       </div>
-      <div className='MessageInputBox'>
+        <form className='MessageInputBox'>
         <input type="text" placeholder="Type a message..." value={messageInput} onChange={handleOnMessageInput} />
-        <button className='SendMessage' onClick={handleOnSendMessage}>Send</button>
-      </div>
+        <button type="submit" className='SendMessage' onClick={handleOnSendMessage}>Send</button>
+        </form>
     </div>
   );
 }
