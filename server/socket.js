@@ -123,7 +123,6 @@ io.on('connection', (socket) => {
                 { receiver: user._id, sender: receiver }
             ]
         }).populate("messages")
-        console.log(conversation)
         socket.emit("messageshistory", conversation);
     });
 });

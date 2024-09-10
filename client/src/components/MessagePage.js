@@ -10,6 +10,7 @@ export default function MessagePage() {
   const [friends, setFriends] = useState([]);
   const [messages, setMessages] = useState([]);
 
+
   const getfriends = useCallback(async () => {
     const token = localStorage.getItem("token");
     const finaltoken = `Bearer ${token}`;
@@ -34,15 +35,50 @@ export default function MessagePage() {
 
   const activeChat = friends?.find(friend => friend._id === activeChatId);
 
+  //get messages
+  const handleOnGetMessages = (id) => {
+    const token = localStorage.getItem("token")
+    const finaltoken = "Bearer " + token
+    socket.emit("startchat", id, finaltoken)
+    socket.emit("getmessages", finaltoken, id)
+    socket.on("messageshistory", (messages) => {
+      const allmessages = []
+      messages.forEach((message) => {
+        if (message.sender === id) {
+          const finalmessage = message.messages
+          finalmessage.forEach((text) => {
+            allmessages.push({
+              type: 'received',
+              text: text.text,
+              time: text.createdAt
+            })
+          })
+        } else if (message.receiver === id) {
+          const finalmessage = message.messages
+          finalmessage.forEach((text) => {
+            allmessages.push({
+              type: 'sent',
+              text: text.text,
+              time: text.createdAt
+            })
+          })
+        }
+      })
+      allmessages.sort((a, b) => new Date(a.time) - new Date(b.time));
+      setMessages(allmessages)
+    })
+  }
+
+
   return (
     <div className='messagingpage'>
-      <PeopleList setActiveChatId={setActiveChatId} friends={friends} setMessages={setMessages} />
-      <Messages activeChat={activeChat} setActiveChatId={setActiveChatId} Messages={messages}/>
+      <PeopleList setActiveChatId={setActiveChatId} friends={friends} handleOnGetMessages={handleOnGetMessages} />
+      <Messages activeChat={activeChat} setActiveChatId={setActiveChatId} Messages={messages} handleOnGetMessages={handleOnGetMessages} />
     </div>
   );
 }
 
-function PeopleList({ setActiveChatId, friends, setMessages }) {
+function PeopleList({ setActiveChatId, friends, handleOnGetMessages }) {
   const [userDetails, setUserDetails] = useState({
     name: '',
     email: '',
@@ -100,40 +136,8 @@ function PeopleList({ setActiveChatId, friends, setMessages }) {
   //select and start chat
   const handleOnChat = (id) => {
     setActiveChatId(id)
-    const token = localStorage.getItem("token")
-    const finaltoken = "Bearer " + token
-    socket.emit("startchat", id, finaltoken)
-    socket.emit("getmessages", finaltoken, id)
-    socket.on("messageshistory", (messages) => {
-      const allmessages = []
-      messages.forEach((message) => {
-        if (message.sender === id) {
-          const finalmessage = message.messages
-          finalmessage.forEach((text) => {
-            allmessages.push({
-              type: 'received',
-              text: text.text,
-              time: text.createdAt
-            })
-          })
-        } else if (message.receiver === id) {
-          const finalmessage = message.messages
-          finalmessage.forEach((text) => {
-            allmessages.push({
-              type: 'sent',
-              text: text.text,
-              time: text.createdAt
-            })
-          })
-        }
-      })
-      allmessages.sort((a, b) => new Date(a.time) - new Date(b.time));
-      setMessages(allmessages)
-    })
+    handleOnGetMessages(id)
   }
-
-
-
 
   return (
     <div className='PeopleList'>
@@ -167,7 +171,7 @@ function PeopleList({ setActiveChatId, friends, setMessages }) {
   );
 }
 
-function Messages({ activeChat, setActiveChatId, Messages }) {
+function Messages({ activeChat, setActiveChatId, Messages, handleOnGetMessages }) {
   const [messageInput, setMessageInput] = useState("");
 
   if (!activeChat) {
@@ -189,7 +193,9 @@ function Messages({ activeChat, setActiveChatId, Messages }) {
     const finaltoken = `Bearer ${token}`
     socket.emit("sendmessage", finaltoken, chatId, messageInput)
     setMessageInput("")
+    handleOnGetMessages(activeChat._id)
   }
+
 
   return (
     <div className="Messages-box">
