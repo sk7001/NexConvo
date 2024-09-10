@@ -93,8 +93,6 @@ io.on('connection', (socket) => {
             conversation = new conversationModel({ sender: user._id, receiver: id });
             await conversation.save();
         }
-
-        socket.emit("messageshistory", conversation.messages);
     });
 
 
@@ -121,8 +119,8 @@ io.on('connection', (socket) => {
         const user = await getUserDetailsFromToken(token);
         const conversation = await conversationModel.find({
             $or: [
-                { sender: user._id,receiver:receiver},
-                { receiver: user._id, sender:receiver }
+                { sender: user._id, receiver: receiver },
+                { receiver: user._id, sender: receiver }
             ]
         }).populate("messages")
         console.log(conversation)

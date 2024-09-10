@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 export default function MessagePage() {
   const [activeChatId, setActiveChatId] = useState(null);
   const [friends, setFriends] = useState([]);
+  const [messages, setMessages] = useState([]);
 
   const getfriends = useCallback(async () => {
     const token = localStorage.getItem("token");
@@ -35,13 +36,13 @@ export default function MessagePage() {
 
   return (
     <div className='messagingpage'>
-      <PeopleList setActiveChatId={setActiveChatId} friends={friends} />
-      <Messages activeChat={activeChat} setActiveChatId={setActiveChatId} />
+      <PeopleList setActiveChatId={setActiveChatId} friends={friends} setMessages={setMessages} />
+      <Messages activeChat={activeChat} setActiveChatId={setActiveChatId} Messages={messages}/>
     </div>
   );
 }
 
-function PeopleList({ setActiveChatId, friends }) {
+function PeopleList({ setActiveChatId, friends, setMessages }) {
   const [userDetails, setUserDetails] = useState({
     name: '',
     email: '',
@@ -95,8 +96,8 @@ function PeopleList({ setActiveChatId, friends }) {
     };
   }, []);
 
+
   //select and start chat
-  const [Messages, setMessages] = useState([])
   const handleOnChat = (id) => {
     setActiveChatId(id)
     const token = localStorage.getItem("token")
@@ -104,10 +105,35 @@ function PeopleList({ setActiveChatId, friends }) {
     socket.emit("startchat", id, finaltoken)
     socket.emit("getmessages", finaltoken, id)
     socket.on("messageshistory", (messages) => {
-      // setMessages(messages)
-      console.log(messages)
+      const allmessages = []
+      messages.forEach((message) => {
+        if (message.sender === id) {
+          const finalmessage = message.messages
+          finalmessage.forEach((text) => {
+            allmessages.push({
+              type: 'received',
+              text: text.text,
+              time: text.createdAt
+            })
+          })
+        } else if (message.receiver === id) {
+          const finalmessage = message.messages
+          finalmessage.forEach((text) => {
+            allmessages.push({
+              type: 'sent',
+              text: text.text,
+              time: text.createdAt
+            })
+          })
+        }
+      })
+      allmessages.sort((a, b) => new Date(a.time) - new Date(b.time));
+      setMessages(allmessages)
     })
   }
+
+
+
 
   return (
     <div className='PeopleList'>
@@ -141,23 +167,12 @@ function PeopleList({ setActiveChatId, friends }) {
   );
 }
 
-function Messages({ activeChat, setActiveChatId }) {
+function Messages({ activeChat, setActiveChatId, Messages }) {
   const [messageInput, setMessageInput] = useState("");
 
   if (!activeChat) {
     return <div className='noactiveselected'><h1>No active chat selected</h1></div>;
   }
-
-  const Messages = [
-    { type: 'received', text: 'Hey there! How are you?' },
-    { type: 'sent', text: 'I am good, how about you?' },
-    { type: 'received', text: 'I am doing well, thanks!' },
-    { type: 'sent', text: 'What have you been up to lately?' },
-    { type: 'received', text: 'Just working on some projects. You?' },
-    { type: 'sent', text: 'Same here, busy with coding and work.' },
-    { type: 'received', text: 'Nice! Keep up the good work.' },
-    { type: 'sent', text: 'Thanks! Will do.' }
-  ]
 
   const handleOnClose = () => {
     setActiveChatId(null)
@@ -172,7 +187,6 @@ function Messages({ activeChat, setActiveChatId }) {
     const token = localStorage.getItem("token")
     const chatId = activeChat._id
     const finaltoken = `Bearer ${token}`
-    console.log(messageInput)
     socket.emit("sendmessage", finaltoken, chatId, messageInput)
     setMessageInput("")
   }
@@ -192,7 +206,7 @@ function Messages({ activeChat, setActiveChatId }) {
         ))}
       </div>
       <form className='MessageInputBox' >
-        <input type="text"style={activeChat.socketId?{}:{borderRadius:"15px", textAlign:'center', fontSize:'20px'}} placeholder={activeChat.socketId?"Type a message...":"User is Offline"} value={messageInput} onChange={handleOnMessageInput} disabled={activeChat.socketId?false:true} />
+        <input type="text" style={activeChat.socketId ? {} : { borderRadius: "15px", textAlign: 'center', fontSize: '20px' }} placeholder={activeChat.socketId ? "Type a message..." : "User is Offline"} value={messageInput} onChange={handleOnMessageInput} disabled={activeChat.socketId ? false : true} />
         {activeChat.socketId && <button type="submit" className='SendMessage' onClick={handleOnSendMessage}>Send</button>}
       </form>
     </div>
