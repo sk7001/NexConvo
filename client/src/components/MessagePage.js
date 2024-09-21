@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import "./MessagePage.css";
 import { socket } from '../socket';
 import { useNavigate } from 'react-router-dom';
@@ -172,6 +172,13 @@ function PeopleList({ setActiveChatId, friends, handleOnGetMessages }) {
 
 function Messages({ activeChat, setActiveChatId, Messages, handleOnGetMessages, setMessages }) {
   const [messageInput, setMessageInput] = useState("");
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  });
 
   useEffect(() => {
     socket.on("receivedmessage", (message) => {
@@ -232,6 +239,7 @@ function Messages({ activeChat, setActiveChatId, Messages, handleOnGetMessages, 
         <input type="text" style={activeChat.socketId ? {} : { borderRadius: "15px", textAlign: 'center', fontSize: '20px' }} placeholder={activeChat.socketId ? "Type a message..." : "User is Offline"} value={messageInput} onChange={handleOnMessageInput} disabled={activeChat.socketId ? false : true} />
         {activeChat.socketId && <button type="submit" className='SendMessage' onClick={handleOnSendMessage}>Send</button>}
       </form>
+      <div ref={messagesEndRef} />
     </div>
   );
 }
