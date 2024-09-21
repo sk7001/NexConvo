@@ -110,7 +110,9 @@ io.on('connection', (socket) => {
         await newMessage.save();
         conversation.messages.push(newMessage._id);
         await conversation.save();
-        // socket.emit("newmessage", newMessage);
+        const receiverDetails = await UserModel.findById(receiver)
+        console.log(receiverDetails)
+        io.to(receiverDetails.socketId).emit("receivedmessage", messageInput)
     });
 
 

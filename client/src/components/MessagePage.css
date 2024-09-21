@@ -141,6 +141,7 @@
     border: none;
     color: white;
     font-size: 15px;
+    margin: 0 5px;
 }
 
 .messagingpage .PeopleList .Friend:hover {
@@ -199,13 +200,13 @@
     padding: 6px 25px;
     transition: 150ms;
 }
+
 .Messages-box .Name button:hover{
     background-color: #6a0000;
-
 }
 
 .Messages-box .Messages {
-    margin-top: 10vh;
+    margin: 10vh 0 8vh 0;
     display: flex;
     flex-direction: column;
 }

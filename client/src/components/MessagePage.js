@@ -19,7 +19,6 @@ export default function MessagePage() {
 
     const handleFriends = (data) => {
       setFriends(data);
-      console.log(data)
     };
 
     socket.on("friends", handleFriends);
@@ -73,7 +72,7 @@ export default function MessagePage() {
   return (
     <div className='messagingpage'>
       <PeopleList setActiveChatId={setActiveChatId} friends={friends} handleOnGetMessages={handleOnGetMessages} />
-      <Messages activeChat={activeChat} setActiveChatId={setActiveChatId} Messages={messages} handleOnGetMessages={handleOnGetMessages} />
+      <Messages activeChat={activeChat} setActiveChatId={setActiveChatId} Messages={messages} handleOnGetMessages={handleOnGetMessages} setMessages={setMessages} />
     </div>
   );
 }
@@ -171,8 +170,24 @@ function PeopleList({ setActiveChatId, friends, handleOnGetMessages }) {
   );
 }
 
-function Messages({ activeChat, setActiveChatId, Messages, handleOnGetMessages }) {
+function Messages({ activeChat, setActiveChatId, Messages, handleOnGetMessages, setMessages }) {
   const [messageInput, setMessageInput] = useState("");
+
+  useEffect(() => {
+    socket.on("receivedmessage", (message) => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          type: "received",
+          text: message,
+        },
+      ]);
+    });
+
+    return () => {
+      socket.off("receivedmessage");     
+    };
+  }, [setMessages]);
 
   if (!activeChat) {
     return <div className='noactiveselected'><h1>No active chat selected</h1></div>;
@@ -193,8 +208,10 @@ function Messages({ activeChat, setActiveChatId, Messages, handleOnGetMessages }
     const finaltoken = `Bearer ${token}`
     socket.emit("sendmessage", finaltoken, chatId, messageInput)
     setMessageInput("")
-    handleOnGetMessages(activeChat._id)
+    setMessages((prev) => [...prev, { type: "sent", text: messageInput}])
   }
+
+
 
 
   return (
