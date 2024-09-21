@@ -65,6 +65,7 @@ export default function MessagePage() {
       })
       allmessages.sort((a, b) => new Date(a.time) - new Date(b.time));
       setMessages(allmessages)
+      console.log(allmessages)
     })
   }
 

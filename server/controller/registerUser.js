@@ -11,10 +11,7 @@ const registerUser = async (req, res) => {
         if (checkEmail) {
             return res.status(400).json({ message: "Email already exists" });
         }
-        // console.log(req.body)
-        //hashpassword
         const hashedPassword = await bcryptjs.hash(password, 10);
-        // console.log(hashedPassword)
         const result = await cloudinary.uploader.upload(profile_pic,
             {
                 upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
