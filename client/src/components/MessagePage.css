@@ -29,6 +29,7 @@
 
 .messagingpage .PeopleList .ProfileBox .Profile img {
     width: 50px;
+    height: 50px;
     aspect-ratio: 1/1;
     border-radius: 100%;
     margin: 15px 0 0 25px;
@@ -117,6 +118,7 @@
 
 .messagingpage .PeopleList .AllChats img {
     width: 50px;
+
     border-radius: 100%;
     aspect-ratio: 1/1;
     object-fit: cover;
@@ -142,6 +144,13 @@
     color: white;
     font-size: 15px;
     margin: 0 5px;
+}
+
+.messagingpage .PeopleList .Friend img{
+    width: 50px;
+    height: 50px;
+    aspect-ratio: 1/1;
+
 }
 
 .messagingpage .PeopleList .Friend:hover {
@@ -183,7 +192,7 @@
 
 .Messages-box .Name img {
     width: 50px;
-    aspect-ratio: 1/1;
+    height: 50px;
     object-fit: cover;
     border-radius: 100%;
     margin: 15px;

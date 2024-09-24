@@ -161,7 +161,7 @@ function PeopleList({ setActiveChatId, friends, handleOnGetMessages }) {
       <div className='AllChats'>
         {friends.map((friend) => (
           <button key={friend._id} className='Friend' onClick={() => handleOnChat(friend._id)}>
-            <img src={friend.profile_pic} style={friend.socketId ? { borderStyle: 'solid', borderColor: 'yellowgreen' } : { borderStyle: 'solid', borderColor: 'transparent' }} alt="profile pic" />
+            <img src={friend.profile_pic} style={friend.socketId ? { borderStyle: 'solid', borderColor: 'yellowgreen' } : { borderStyle: 'solid', borderColor: 'transparent' }} alt={friend.name} />
             <label>{friend.name}</label>
           </button>
         ))}
