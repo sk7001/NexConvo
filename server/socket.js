@@ -35,13 +35,19 @@ io.on('connection', (socket) => {
     });
 
     // Search for people
-    socket.on('searchpeople', async (search) => {
+    socket.on('searchpeople', async (token, search) => {
+        const searchuser = await getUserDetailsFromToken(token);
         const users = await UserModel.find({
-            $or: [
-                { name: { $regex: '^' + search, $options: 'i' } },
-                { phone: { $regex: '^' + search, $options: 'i' } }
+            $and: [
+                {
+                    $or: [
+                        { name: { $regex: '^' + search, $options: 'i' } },
+                        { phone: { $regex: '^' + search, $options: 'i' } }
+                    ]
+                },
+                { _id: { $ne: searchuser._id } }
             ]
-        }).select("-password");
+        }).select("-password")
         socket.emit('searchresult', users);
     });
 

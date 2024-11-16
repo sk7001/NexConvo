@@ -116,7 +116,9 @@ function PeopleList({ setActiveChatId, friends, handleOnGetMessages }) {
   const handleOnSearch = (event) => {
     const currentSearch = event.target.value;
     setSearchState((prevState) => ({ ...prevState, search: currentSearch }));
-    socket.emit("searchpeople", currentSearch);
+    const token = localStorage.getItem("token");
+    const finaltoken = `Bearer ${token}`
+    socket.emit("searchpeople", finaltoken, currentSearch);
   };
 
   useEffect(() => {
