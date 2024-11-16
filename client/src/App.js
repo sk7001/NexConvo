@@ -5,6 +5,7 @@ import MessagePage from './components/MessagePage';
 import Home from './pages/Home';
 import Auth from './pages/helper/Auth';
 import Login from './pages/Login';
+import Profile from './components/profile';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route element={<Auth />}>
           <Route path='/user' element={<MessagePage />} />
+          <Route path='/profile' element={<Profile/>} />
         </Route>
       </Routes>
     </BrowserRouter>

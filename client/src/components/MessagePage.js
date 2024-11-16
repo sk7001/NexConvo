@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import "./MessagePage.css";
 import { socket } from '../socket';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate } from 'react-router-dom';
 
 
 export default function MessagePage() {
@@ -140,11 +140,15 @@ function PeopleList({ setActiveChatId, friends, handleOnGetMessages }) {
     handleOnGetMessages(id)
   }
 
+  const handleOnClickProfile = () =>{
+    navigate("/profile")
+  }
+
   return (
     <div className='PeopleList'>
       <div className='ProfileBox'>
         <div className="Profile">
-          <img src={userDetails.profile_pic} alt={userDetails.name} />
+          <img src={userDetails.profile_pic} onClick={handleOnClickProfile} alt={userDetails.name} />
           <button onClick={handleOnLogout} className='Logout'>Logout</button>
         </div>
         <div className='Search'>
@@ -153,7 +157,7 @@ function PeopleList({ setActiveChatId, friends, handleOnGetMessages }) {
             {searchState.people.map((friend) => (
               <button key={friend._id} className='Friend' onClick={() => { handleOnChat(friend._id); window.location.reload() }}>
                 <img src={friend.profile_pic} alt="profile pic" />
-                <label>{friend.name}</label>
+                <label className='searchtext'>{friend.name}</label>
               </button>
             ))}
             <label className='endoflist'>*****End of List*****</label>

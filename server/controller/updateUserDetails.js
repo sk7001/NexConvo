@@ -3,21 +3,21 @@ const UserModel = require("../models/UserModel")
 
 const updateUserDetails = async (req, res) => {
     try {
-        const token = req.cookies.token
+        const token = req.body.headers.Authorization
         const user = await getUserDetailsFromToken(token)
-        const { name, profile_pic } = req.body
-        const updatedUser = await UserModel.updateOne({
+        const { name, email, profile_pic } = req.body.userDetails
+        await UserModel.updateOne({
             _id: user._id,
             $set: {
                 name: name,
+                email: email,
                 profile_pic: profile_pic
             }
         })
-        const userInformation = await UserModel.findById(user._id)
-        res.status(200).json({ message: "User updated successfully", userInformation })
+        return res.status(200).json({ message: "Details updated successfully" })
     } catch (error) {
-        res.status(400).json({ error })
-    }   
+        return res.status(400).json({ message: "Something went wrong please try again" })
+    }
 }
 
 module.exports = updateUserDetails

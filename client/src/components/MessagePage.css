@@ -116,6 +116,10 @@
     padding: 10px 0;
 }
 
+.messagingpage .PeopleList .Search .searchresults .Friend .searchtext{
+    text-align: justify;
+}
+
 .messagingpage .PeopleList .AllChats img {
     width: 50px;
 
