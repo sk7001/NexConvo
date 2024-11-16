@@ -42,7 +42,8 @@ const checkPassword = async (req, res) => {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
             };
-            return res.cookie("token", token, cookieOptions).status(201).json({ message: `Welcome, ${name}`, token });
+
+            return res.cookie("token", token, cookieOptions).status(201).json({ message: `Welcome, ${user.name}`, token });
         }
 
         const user = await UserModel.findById(userId);
