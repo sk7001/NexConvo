@@ -5,12 +5,11 @@ const updateUserDetails = async (req, res) => {
     try {
         const token = req.body.headers.Authorization
         const user = await getUserDetailsFromToken(token)
-        const { name, email, profile_pic } = req.body.userDetails
+        const { name, profile_pic } = req.body.userDetails
         await UserModel.updateOne({
             _id: user._id,
             $set: {
                 name: name,
-                email: email,
                 profile_pic: profile_pic
             }
         })
