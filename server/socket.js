@@ -11,7 +11,7 @@ io.on('connection', (socket) => {
     socket.on('logout', async (token) => {
         const user = await getUserDetailsFromToken(token)
         await UserModel.updateOne(
-            { _id: user._id },
+            { _id: user._id },  
             {
                 $set: {
                     socketId: null
