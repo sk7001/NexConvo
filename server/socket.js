@@ -105,9 +105,9 @@ io.on('connection', (socket) => {
     //send messages
     socket.on("sendmessage", async (token, receiver, messageInput) => {
         const user = await getUserDetailsFromToken(token);
-        const conversation = await conversationModel.findOne({ sender: user._id, receiver: receiver })
+        let conversation = await conversationModel.findOne({ sender: user._id, receiver: receiver })
         if (!conversation) {
-            const conversation = new conversationModel({ sender: user._id, receiver: receiver });
+            conversation = new conversationModel({ sender: user._id, receiver: receiver });
             await conversation.save();
         }
         const newMessage = new messageModel({
